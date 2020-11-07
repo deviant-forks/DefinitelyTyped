@@ -82,8 +82,8 @@ declare namespace React {
     type ComponentType<P = {}> = ComponentClass<P> | FunctionComponent<P>;
 
     type JSXElementConstructor<P> =
-        | ((props: P) => ReactElement | null)
-        | (new (props: P) => Component<P, any>);
+        | ((props: Readonly<P>) => ReactElement | null)
+        | (new (props: Readonly<P>) => Component<P, any>);
 
     interface RefObject<T> {
         readonly current: T | null;
@@ -145,7 +145,7 @@ declare namespace React {
 
     interface ReactElement<P = any, T extends string | JSXElementConstructor<any> = string | JSXElementConstructor<any>> {
         type: T;
-        props: P;
+        props: Readonly<P>;
         key: Key | null;
     }
 
@@ -354,7 +354,7 @@ declare namespace React {
         /**
          * **NOTE**: Exotic components are not callable.
          */
-        (props: P): (ReactElement|null);
+        (props: Readonly<P>): (ReactElement|null);
         readonly $$typeof: symbol;
     }
 
@@ -541,7 +541,7 @@ declare namespace React {
     type FC<P = {}> = FunctionComponent<P>;
 
     interface FunctionComponent<P = {}> {
-        (props: PropsWithChildren<P>, context?: any): ReactElement<any, any> | null;
+        (props: Readonly<PropsWithChildren<P>>, context?: any): ReactElement<any, any> | null;
         propTypes?: WeakValidationMap<P>;
         contextTypes?: ValidationMap<any>;
         defaultProps?: Partial<P>;
@@ -561,7 +561,7 @@ declare namespace React {
     type ForwardedRef<T> = ((instance: T | null) => void) | MutableRefObject<T | null> | null;
 
     interface ForwardRefRenderFunction<T, P = {}> {
-        (props: PropsWithChildren<P>, ref: ForwardedRef<T>): ReactElement | null;
+        (props: Readonly<PropsWithChildren<P>>, ref: ForwardedRef<T>): ReactElement | null;
         displayName?: string;
         // explicit rejected with `never` required due to
         // https://github.com/microsoft/TypeScript/issues/36826
